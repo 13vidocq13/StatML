@@ -1,0 +1,312 @@
+﻿body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #F5F7FA, #E0E7E9);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+    h1 span {
+        color: #4A90E2;
+        animation: glow 2s ease-in-out infinite;
+    }
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 5px #4A90E2;
+    }
+
+    50% {
+        text-shadow: 0 0 10px #4A90E2;
+    }
+
+    100% {
+        text-shadow: 0 0 5px #4A90E2;
+    }
+}
+
+p {
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.stats-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+    .card h2 {
+        color: #4A90E2;
+        margin-bottom: 10px;
+        font-size: 1.5em;
+    }
+
+.table-container {
+    max-width: 100%;
+    overflow-x: auto; /* Горизонтальная прокрутка для всех таблиц */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px; /* Минимальная ширина для активации прокрутки */
+}
+
+th, td {
+    padding: 8px;
+    white-space: nowrap; /* Убираем перенос строк */
+    overflow: visible !important; /*overflow: hidden;*/ /* Скрываем переполнение */
+    text-overflow: ellipsis; /* Обрезаем с многоточием */
+    border-bottom: 1px solid #ddd; /* Граница для ячеек */
+}
+
+th {
+    background: linear-gradient(90deg, #4A90E2, #50C9C3);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Скрытие колонок в зависимости от роли (оставляем как есть) */
+[data-role="editor"] {
+    display: none;
+}
+
+[data-role="admin"] {
+    display: none;
+}
+
+.admin-user [data-role="admin"],
+.editor-user [data-role="editor"] {
+    display: table-cell;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .pagination button {
+        padding: 8px 15px;
+        margin: 0 5px;
+        background-color: #4A90E2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s;
+    }
+
+        .pagination button:hover {
+            background-color: #357ABD;
+        }
+
+        .pagination button.active {
+            background-color: #2E6DA4;
+        }
+
+@media (max-width: 600px) {
+    .stats-container {
+        flex-direction: column;
+    }
+
+    table {
+        font-size: 0.9em;
+    }
+
+    th, td {
+        padding: 6px;
+    }
+
+    .table-container {
+        overflow-x: auto; /* Прокрутка на мобильных */
+    }
+}
+
+option[value="-1"] {
+    color: red; /* Красный цвет текста */
+}
+
+    /* Опционально: для совместимости с темными темами */
+    option[value="-1"]:hover {
+        color: #ff4d4d; /* Светло-красный при наведении */
+    }
+a.disabled {
+    pointer-events: none; /* Блокирует клик */
+    opacity: 0.5; /* Делает серой */
+    cursor: not-allowed; /* Курсор "запрещено" */
+    text-decoration: none; /* Убирает подчёркивание (по желанию) */
+    color: #999; /* Серый цвет текста */
+}
+
+.toggle-icon {
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+tr.open .toggle-icon {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Опционально: плавное появление */
+.table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.toggle-icon {
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+tr[data-group-header].open .toggle-icon {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/*.table tbody tr {
+    transition: background-color 0.2s;
+}*/
+
+.table-zebra tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+    .table-zebra tbody tr:nth-child(odd) {
+        background-color: #f8f9fa !important;
+    }
+
+    .table-zebra tbody tr:nth-child(even) {
+        background-color: #ffffff !important;
+    }
+
+    /* ПЕРЕОПРЕДЕЛЯЕМ HOVER — ДЛЯ ВСЕХ СТРОК */
+    .table-zebra tbody tr:hover {
+        background-color: #e9ecef !important;
+    }
+
+/* Основная ячейка */
+.farm-zone-cell {
+    position: relative;
+    max-width: 180px;
+    padding: 6px 8px;
+    cursor: default;
+}
+
+.zone-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95em;
+}
+
+.main-zone {
+    font-weight: 600;
+    color: #1a73e8;
+}
+
+.extra-count {
+    padding: 2px 6px;
+    background: #e8f0fe;
+    color: #1a73e8;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.no-zone {
+    color: #999;
+    font-style: italic;
+}
+
+/* === ТУЛТИП — НАД ВСЕМ === */
+.farm-tooltip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    z-index: 99999 !important; /* НАД ВСЕМ */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    margin-top: -12px;
+    /* Добавь: */
+    max-width: 90vw;
+    width: max-content;
+}
+
+    .farm-tooltip.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(-115%);
+    }
+
+.tooltip-content {
+    background: #2d3748;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    line-height: 1.4;
+    max-width: 300px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    white-space: normal;
+    word-wrap: break-word;
+    text-align: center;
+}
+
+.tooltip-arrow {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #2d3748;
+}
+
+/* Ховер — показываем тултип */
+.farm-zone-cell:hover .farm-tooltip {
+    display: block;
+}
+
+.farm-zone-cell:hover .farm-tooltip {
+    animation: tooltipSlideDown 0.25s ease-out forwards;
+}
+
+@keyframes tooltipSlideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-90%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-110%);
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page
+@model StatML.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "_Layout";
+}
+
+<style>
+    body {
+        background: url("/images/fantasy-bg.jpg") no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    /* Контейнер меню слева */
+    .menu-container {
+        position: absolute;
+        top: 120px;
+        left: 60px;
+        padding: 25px 35px;
+        width: 260px;
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 12px;
+        backdrop-filter: blur(6px);
+    }
+
+        .menu-container a {
+            display: block;
+            font-size: 22px;
+            text-decoration: none;
+            margin: 10px 0;
+            color: #f2f2f2 !important; /* ← Принудительный светлый */
+            transition: 0.2s;
+        }
+
+            .menu-container a:hover {
+                color: #ffd369 !important; /* мягкий золотистый hover */
+                transform: translateX(6px);
+            }
+</style>
+
+<div class="menu-container">
+    <a asp-page="/Players/Management">Игроки</a>
+    <a asp-page="/Grails/General">Граали</a>
+    <a asp-page="/Salts/General">Озера</a>
+    <a asp-page="/Tournaments/Management">Турниры</a>
+    <a asp-page="/Promotions/Management">Акции</a>
+    <a asp-page="/Sets/Management">Комплекты</a>
+    <a asp-page="/Artifacts/Management">Артефакты</a>
+    <a asp-page="/Utopia/Management">Утопия</a>
+    <a asp-page="/ArhiRuins/Management">Архи-руины</a>
+    <a asp-page="/Admin/Users">Управление ролями</a>
+    <a asp-page="/Players/RatingArmy">Изменение рейтинга</a>
+</div>

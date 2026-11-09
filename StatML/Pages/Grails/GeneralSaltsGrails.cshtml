@@ -1,0 +1,76 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Grails.GeneralSaltsGrailsModel
+@attribute [Authorize(Policy = "Observer")]
+
+<head>
+    <link rel="stylesheet" href="~/css/General.css" />
+</head>
+
+<body>
+    <h1>Сводная статистика по граалям и озерам</h1>
+    <p>
+        <a asp-page="/Grails/Management">Управление граалями</a> | <a asp-page="/Salts/CurrentSaltsManagement">Управление озерами</a>
+    </p>
+    <div class="stats-container">
+        <div class="card">
+            <table class="table-zebra">
+                <thead>
+                    <tr>
+                        <th>Ник</th>
+                        <th>Количество часов граалей</th>
+                        <th>Количество ЧЖ</th>
+                        <th>Количество дней озер</th>
+                        <th>Количество ЧЖ</th>
+                        <th>Суммарно ЧЖ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in Model.Players.Items)
+                    {
+                        <tr>
+                            <td><a asp-page="/Players/Details" asp-route-id="@player.Player.Id">@player.Player.PName</a></td>
+                            <td>@player.GrailsHours</td>
+                            <td>@player.GrailsGem</td>
+                            <td>@(Math.Round(player.SaltsDays))</td>
+                            <td>@(Math.Round(player.SaltsGem))</td>
+                            <td><b>@(Math.Round(player.TotalBlackGem))</b></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="pagination">
+                @if (Model.Players.HasPreviousPage)
+                {
+                    <a asp-page="/Grails/GeneralSaltsGrails" asp-route-pageIndex="@(Model.Players.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                }
+                else
+                {
+                    <span class="btn btn-primary disabled">&laquo; Назад</span>
+                }
+
+                @for (int i = 1; i <= Model.Players.TotalPages; i++)
+                {
+                    if (i == Model.Players.PageIndex)
+                    {
+                        <span class="btn btn-primary disabled">@i</span>
+                    }
+                    else
+                    {
+                        <a asp-page="/Grails/GeneralSaltsGrails" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
+                    }
+                }
+
+                @if (Model.Players.HasNextPage)
+                {
+                    <a asp-page="/Grails/GeneralSaltsGrails" asp-route-pageIndex="@(Model.Players.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+                }
+                else
+                {
+                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+                }
+            </div>
+        </div>
+    </div>
+    <p><a asp-page="/Index">На главную</a></p>
+</body>

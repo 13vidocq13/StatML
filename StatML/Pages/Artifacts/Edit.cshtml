@@ -1,0 +1,31 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Artifacts.EditModel
+@attribute [Authorize(Policy = "AdminOnly")]
+
+<head>
+    <link rel="stylesheet" href="~/css/General.css" />
+</head>
+
+<body>
+    <h1>Редактировть артефакт</h1>
+    <form method="post">
+        <div class="form-group">
+            <input type="hidden" asp-for="Artifact.Id" />
+            <label asp-for="Artifact.SetId">Комплект</label>
+            <select asp-for="Artifact.SetId" asp-items="Model.Sets" class="form-control">
+                <option value="">-- Выберите комплект --</option>
+            </select>
+            <span asp-validation-for="Artifact.SetId" class="text-danger"></span>
+            <label asp-for="Artifact.Name">Название</label>
+            <input asp-for="Artifact.Name" class="form-control" />
+            <span asp-validation-for="Artifact.Name" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-page="/Artifacts/Management" class="btn btn-secondary">Отмена</a>
+    </form>
+</body>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

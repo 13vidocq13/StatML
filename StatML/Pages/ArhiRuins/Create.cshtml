@@ -1,0 +1,35 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.ArhiRuins.CreateModel
+@attribute [Authorize(Policy = "AdminOnly")]
+
+<head>
+    <link rel="stylesheet" href="~/css/General.css" />
+</head>
+
+<body>
+    <h1>Добавить архи-руину</h1>
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="ArhiRuin.PlayerId">Ник</label>
+            <select asp-for="ArhiRuin.PlayerId" asp-items="Model.Players" class="form-control">
+                <option value="">-- Выберите игрока --</option>
+            </select>
+            <label asp-for="ArhiRuin.HorizontalPosition">Горизонтальная позиция</label>
+            <input asp-for="ArhiRuin.HorizontalPosition" class="form-control" />
+            <span asp-validation-for="ArhiRuin.HorizontalPosition" class="text-danger"></span>
+            <label asp-for="ArhiRuin.VerticalPosition">Вертикальная позиция</label>
+            <input asp-for="ArhiRuin.VerticalPosition" class="form-control" />
+            <span asp-validation-for="ArhiRuin.VerticalPosition" class="text-danger"></span>
+            <label asp-for="ArhiRuin.BlackGemCount">Количество ЧЖ</label>
+            <input asp-for="ArhiRuin.BlackGemCount" class="form-control" />
+            <span asp-validation-for="ArhiRuin.BlackGemCount" class="text-danger"></span>
+            <label asp-for="ArhiRuin.DateOnly">Дата</label>
+            <input asp-for="ArhiRuin.DateOnly" class="form-control" />
+            <span asp-validation-for="ArhiRuin.DateOnly" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-page="/Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</body>
+

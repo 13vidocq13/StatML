@@ -1,0 +1,42 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Salts.CreateModel
+@attribute [Authorize(Policy = "SaltsEditor")]
+
+<head>
+    <link rel="stylesheet" href="~/css/General.css" />
+</head>
+
+<body>
+    <h1>Добавить озеро</h1>
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="Salt.PlayerId">Владелец</label>
+            <select asp-for="Salt.PlayerId" asp-items="Model.Players" class="form-control">
+                <option value="">-- Выберите игрока --</option>
+            </select>
+            <input type="hidden" asp-for="Salt.SaltId" />
+            <span asp-validation-for="Salt.PlayerId" class="text-danger"></span>
+            <label asp-for="Salt.HorizontalPosition">Горизонтальная позиция</label>
+            <input asp-for="Salt.HorizontalPosition" class="form-control" />
+            <span asp-validation-for="Salt.HorizontalPosition" class="text-danger"></span>
+            <label asp-for="Salt.VerticalPosition">Вертикальная позиция</label>
+            <input asp-for="Salt.VerticalPosition" class="form-control" />
+            <span asp-validation-for="Salt.VerticalPosition" class="text-danger"></span>
+            <label asp-for="Salt.DateSalt">Дата</label>
+            <input asp-for="Salt.DateSalt" class="form-control" @* value="@(Model.Salt.DateSalt == default ? "" : Model.Salt.DateSalt.Value.ToString("yyyy-MM-dd"))" *@ />
+            <span asp-validation-for="Salt.DateSalt" class="text-danger"></span>
+            <label asp-for="Salt.DaysForPlayer">Примерное количество суток</label>
+            <input asp-for="Salt.DaysForPlayer" class="form-control" type="number" />
+            <span asp-validation-for="Salt.DaysForPlayer" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-page="/Salts/CurrentSaltsManagement" class="btn btn-secondary">Отмена</a>
+    </form>
+</body>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

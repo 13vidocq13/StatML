@@ -1,0 +1,53 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Utopia.CreateModel
+@attribute [Authorize(Policy = "AdminOnly")]
+
+<head>
+    <link rel="stylesheet" href="~/css/General.css" />
+</head>
+
+<body>
+    <h1>Редактировать информацию о утопии</h1>
+    <form method="post">
+        @* <input type="hidden" asp-for="Players1.Id" />
+        <input type="hidden" asp-for="Players2.Id" /> *@
+        <div class="form-group">
+            <label asp-for="Utopia.PlayerId1">Участник 1</label>
+            <select asp-for="Utopia.PlayerId1" asp-items="Model.Players" class="form-control">
+                <option value="">-- Выберите игрока --</option>
+            </select>
+            <span asp-validation-for="Utopia.PlayerId1" class="text-danger"></span>
+            <label asp-for="Utopia.ArtifactLevel1">Уровень 1го артефакта)</label>
+            <input type="number" class="form-control" min="3" max="5" asp-for="Utopia.ArtifactLevel1" />
+            <span asp-validation-for="Utopia.ArtifactLevel1" class="text-danger"></span>
+            <label asp-for="Utopia.ArtifactLevel2">Уровень 2го артефакта)</label>
+            <input type="number" class="form-control" min="3" max="5" asp-for="Utopia.ArtifactLevel2" />
+            <span asp-validation-for="Utopia.ArtifactLevel2" class="text-danger"></span>
+            <label asp-for="Utopia.ArtifactLevel3">Уровень 3го артефакта)</label>
+            <input type="number" class="form-control" min="3" max="5" asp-for="Utopia.ArtifactLevel3" />
+            <span asp-validation-for="Utopia.ArtifactLevel3" class="text-danger"></span>
+
+            <label asp-for="Utopia.PlayerId2">Участник 2</label>
+            <select asp-for="Utopia.PlayerId2" asp-items="Model.Players" class="form-control">
+                <option value="">-- Выберите игрока --</option>
+            </select>
+            <span asp-validation-for="Utopia.PlayerId2" class="text-danger"></span>
+            <label asp-for="Utopia.ArtifactLevel4">Уровень 4го артефакта)</label>
+            <input type="number" class="form-control" min="3" max="5" asp-for="Utopia.ArtifactLevel4" />
+            <span asp-validation-for="Utopia.ArtifactLevel4" class="text-danger"></span>
+            <label asp-for="Utopia.ArtifactLevel5">Уровень 5го артефакта)</label>
+            <input type="number" class="form-control" min="3" max="5" asp-for="Utopia.ArtifactLevel5" />
+            <span asp-validation-for="Utopia.ArtifactLevel5" class="text-danger"></span>
+            <label asp-for="Utopia.ArtifactLevel6">Уровень 6го артефакта)</label>
+            <input type="number" class="form-control" min="3" max="5" asp-for="Utopia.ArtifactLevel6" />
+            <span asp-validation-for="Utopia.ArtifactLevel6" class="text-danger"></span>
+            
+            <label asp-for="Utopia.DateOnly">Дата утопии</label>
+            <input asp-for="Utopia.DateOnly" class="form-control" />
+            <span asp-validation-for="Utopia.DateOnly" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-page="/Utopia/Management" class="btn btn-secondary">Отмена</a>
+    </form>
+</body>

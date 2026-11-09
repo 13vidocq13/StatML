@@ -1,0 +1,34 @@
+﻿@page
+@model StatML.Pages.FarmZones.CrossingModel
+@{
+    <h1>Пересечение фарм-зон игроков</h1>
+
+    <div class="stats-container">
+        <div class="card">
+            <table class="table-zebra">
+                <thead>
+                    <tr>
+                        <th>Координаты</th>
+                        <th>Игроки</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>Действия</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CrossingFarmZones)
+                    {
+                        var players = string.Join(", ", item.Players.Select(x => x.PName));
+
+                        <tr>
+                            <td><b>@item.HorizontalPosition<span>-</span>@item.VerticalPosition</b></td>
+                            <td>@players</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p><a asp-page="/Index">Назад</a></p>
+}

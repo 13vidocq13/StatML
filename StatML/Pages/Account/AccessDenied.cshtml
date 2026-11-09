@@ -1,0 +1,22 @@
+﻿@page
+@model StatML.Pages.Account.AccessDeniedModel
+<head>
+    <link rel="stylesheet" href="~/css/General.css" />
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-danger">Доступ запрещён</h1>
+        <p>Для доступа к этой странице требуются права: <strong>Admin</strong>.</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <p>Вы вошли как @User.Identity.Name, но у вас недостаточно прав.</p>
+            <p>Обратитесь к администратору для получения роли "Admin".</p>
+        }
+        else
+        {
+            <p>Пожалуйста, <a asp-page="/Login" asp-route-returnUrl="@Request.Path">войдите</a> с учетной записью, имеющей необходимые права.</p>
+        }
+        <a asp-page="/Index" class="btn btn-primary mt-3">Вернуться на главную</a>
+    </div>
+</body>

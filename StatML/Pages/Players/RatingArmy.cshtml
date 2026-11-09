@@ -1,0 +1,93 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Players.RatingArmyModel
+@attribute [Authorize(Policy = "Observer")]
+
+@{
+    ViewData["Title"] = "Игровой рейтинг армии";
+}
+
+<h1>Игровой рейтинг армии</h1>
+
+<!-- Блок фильтрации по датам (два дейтпикера) -->
+<div class="card mb-3" style="padding: 15px; margin-bottom: 20px;">
+    <form method="get" style="display: flex; gap: 15px; align-items: flex-end;">
+        <div>
+            <label for="startDate" style="display: block; font-weight: bold; margin-bottom: 5px;">С даты:</label>
+            <input type="date" id="startDate" asp-for="StartDate" class="form-control" />
+        </div>
+        <div>
+            <label for="endDate" style="display: block; font-weight: bold; margin-bottom: 5px;">По дату:</label>
+            <input type="date" id="endDate" asp-for="EndDate" class="form-control" />
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Показать разницу</button>
+        </div>
+    </form>
+</div>
+
+<div class="stats-container">
+    <div class="card">
+        <table class="table-zebra">
+            <thead>
+                <tr>
+                    <th style="width:100px">Номер</th>
+                    <th style="width:200px">Игровой ник</th>
+                    <th>Изменение рейтинга</th>
+                 </tr>
+            </thead>
+            <tbody>
+                @{
+                    int startIndex = (Model.RatingEntries.PageIndex - 1) * 15 + 1;
+                }
+                @foreach (var entry in Model.RatingEntries.Items)
+                {
+                    <tr>
+                        <td><strong>#@(startIndex++)</strong></td> <!-- Заполняем номер здесь -->
+                        <td><a asp-page="/Players/Details" asp-route-id="@entry.PlayerId">@entry.PlayerName</a></td>
+                        <td>@entry.Difference.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Пагинация с сохранением параметров дат в GET-запросе -->
+        <div class="pagination">
+            @{
+                string GetRouteParams(int pIdx) => $"&pageIndex={pIdx}&startDate={Request.Query["startDate"]}&endDate={Request.Query["endDate"]}";
+            }
+
+            @if (Model.RatingEntries.HasPreviousPage)
+            {
+                <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@(Model.RatingEntries.PageIndex - 1)" asp-route-startDate="@Request.Query["startDate"]" asp-route-endDate="@Request.Query["endDate"]" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.RatingEntries.TotalPages; i++)
+            {
+                if (i == Model.RatingEntries.PageIndex)
+                {
+                    <span class="btn btn-primary disabled">@i</span>
+                }
+                else
+                {
+                    <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@i" asp-route-startDate="@Request.Query["startDate"]" asp-route-endDate="@Request.Query["endDate"]" class="btn btn-primary">@i</a>
+                }
+            }
+
+            @if (Model.RatingEntries.HasNextPage)
+            {
+                <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@(Model.RatingEntries.PageIndex + 1)" asp-route-startDate="@Request.Query["startDate"]" asp-route-endDate="@Request.Query["endDate"]" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
+        </div>
+    </div>
+</div>
+
+<p><a asp-page="/Index">Назад</a></p>

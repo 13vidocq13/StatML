@@ -1,0 +1,171 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Admin.UsersModel
+@attribute [Authorize(Policy = "AdminOnly")]
+
+@{
+    <head>
+        <link rel="stylesheet" href="~/css/General.css" />
+    </head>
+
+    <body>
+        <h1>Список Пользователей</h1>
+        <div class="stats-container">
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Игровой ник</th>
+                            <th>Роль</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Logins.Items)
+                        {
+                            <tr>
+                                <td>@item.Email</td>
+                                <td>
+                                    <select asp-for="@item.PlayerId" asp-items="Model.Players" class="form-control" onchange="updateHiddenValue(this, '@(item.Id)')">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select asp-for="@item.RoleId" asp-items="Model.Roles" class="form-control" onchange="updateHiddenValue(this, '@(item.Id)')">
+                                    </select>
+                                </td>
+                                <td>
+                                    <form method="post" asp-page-handler="Save" style="display:inline;" onsubmit="logFormData(this)" data-login-id="@item.Id">
+                                        <input type="hidden" name="selectedPlayerId" id="selectedPlayerId_@item.Id" value="@item.PlayerId" />
+                                        <input type="hidden" name="selectedRoleId" id="selectedRoleId_@item.Id" value="@item.RoleId" />
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Delete" style="display:inline;" data-login-id="@item.Id">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить игрока @item.Email?')">Удалить</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            // <tr>
+                            //     <td>@item.Email</td>
+                            //     <td>
+                            //         <select asp-for="@item.RoleId" asp-items="Model.Players" class="form-control" onchange="updateHiddenValue(this, '@(item.Id)')">
+                            //         </select>
+                            //     </td>
+                            //     <td>
+                            //         <select asp-for="@item.RoleId" asp-items="Model.Roles" class="form-control" onchange="updateHiddenValue(this, '@(item.Id)')">
+                            //         </select>
+                            //     </td>
+                            //     <td>
+                            //         <form method="post" asp-page-handler="Save" style="display:inline;">
+                            //             <input type="hidden" name="selectedId" id="selectedId_@item.Id" value="@item.RoleId" />
+                            //             <input type="hidden" name="id" value="@item.Id" />
+                            //             <button type="submit" class="btn btn-primary">Сохранить</button>
+                            //         </form>
+                            //         <form method="post" asp-page-handler="Delete" style="display:inline;">
+                            //             <input type="hidden" name="id" value="@item.Id" />
+                            //             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить игрока @item.Email?')">Удалить</button>
+                            //         </form>
+                            //     </td>
+                            // </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    @if (Model.Logins.HasPreviousPage)
+                    {
+                        <a asp-page="/Admin/Users" asp-route-pageIndex="@(Model.Logins.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    }
+                    else
+                    {
+                        <span class="btn btn-primary disabled">&laquo; Назад</span>
+                    }
+
+                    @for (int i = 1; i <= Model.Logins.TotalPages; i++)
+                    {
+                        if (i == Model.Logins.PageIndex)
+                        {
+                            <span class="btn btn-primary disabled">@i</span>
+                        }
+                        else
+                        {
+                            <a asp-page="/Admin/Users" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
+                        }
+                    }
+
+                    @if (Model.Logins.HasNextPage)
+                    {
+                        <a asp-page="/Admin/Users" asp-route-pageIndex="@(Model.Logins.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+                    }
+                    else
+                    {
+                        <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <p><a asp-page="/Index">Назад</a></p>
+    </body>
+}
+
+<script>
+    function updateHiddenValue(selectElement, id) {
+        id = id || '0';
+        console.log("Function called for ID: " + id + ", select name: " + selectElement.name);
+        console.log("Selected value: " + selectElement.value);
+        console.log("Selected option text: " + selectElement.options[selectElement.selectedIndex].text);
+        console.log("Available options:", Array.from(selectElement.options).map(opt => ({ value: opt.value, text: opt.text })));
+
+        var hiddenInputName = selectElement.name.includes('PlayerId')
+            ? "selectedPlayerId_" + id
+            : "selectedRoleId_" + id; // Используем name для определения
+        var hiddenInput = document.getElementById(hiddenInputName);
+
+        if (hiddenInput) {
+            console.log("Found hidden input '" + hiddenInputName + "', current value: " + hiddenInput.value + ", new value: " + selectElement.value);
+            if (selectElement.value !== hiddenInput.value) {
+                hiddenInput.setAttribute('value', selectElement.value);
+                console.log("Updated hidden input '" + hiddenInputName + "' to: " + selectElement.value);
+            } else {
+                console.log("No change needed for '" + hiddenInputName + "', current value: " + hiddenInput.value);
+            }
+        } else {
+            console.error("Hidden input not found for ID: " + hiddenInputName + ". Select HTML: " + selectElement.outerHTML);
+        }
+    }
+
+    function logFormData(form) {
+        var formData = new FormData(form);
+        console.log("Form data being sent from form with action: " + form.action);
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+        // Проверка всех hidden input в форме
+        var hiddenInputs = form.getElementsByTagName('input');
+        console.log("All hidden inputs in this form:");
+        for (var i = 0; i < hiddenInputs.length; i++) {
+            if (hiddenInputs[i].type === 'hidden') {
+                console.log(hiddenInputs[i].name + ': ' + hiddenInputs[i].value + ' (id: ' + hiddenInputs[i].id + ')');
+            }
+        }
+    }
+</script>
+
+@* <script>
+    function updateHiddenValue(selectElement, id) {
+        id = id || '0'; // Значение по умолчанию, если id null
+        console.log("Function called for ID: " + id);
+        console.log("Selected value: " + selectElement.value);
+        var hiddenInput = document.getElementById("selectedId_" + id);
+        if (hiddenInput) {
+            console.log("Found hidden input, updating to: " + selectElement.value);
+            hiddenInput.value = selectElement.value;
+        } else {
+            console.log("Hidden input not found for ID: " + id);
+        }
+    }
+</script> *@
+

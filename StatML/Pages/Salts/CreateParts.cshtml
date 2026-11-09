@@ -1,0 +1,117 @@
+﻿@page
+@model StatML.Pages.Salts.CreatePartsModel
+@{
+    <h1>Калькулятор озерный)</h1>
+
+    <form id="lakeCalcForm" class="p-4 border rounded bg-light">
+        <div class="mb-3">
+            <label for="lakeDate" class="form-label fw-bold">Дата озера (начало)</label>
+            <input type="date" id="lakeDate" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="days" class="form-label fw-bold">Количество дней озера</label>
+            <input type="number" step="any" id="days" class="form-control" min="0" placeholder="Например, 10" required />
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="p1" class="form-label">Процент для игрока 1</label>
+                <input type="number" step="any" id="p1" class="form-control" min="0" max="100" placeholder="0" required />
+            </div>
+            <div class="col-md-6">
+                <label for="p2" class="form-label">Процент для игрока 2</label>
+                <input type="number" step="any" id="p2" class="form-control" min="0" max="100" placeholder="0" required />
+            </div>
+            <div class="col-md-6">
+                <label for="p3" class="form-label">Процент для игрока 3</label>
+                <input type="number" step="any" id="p3" class="form-control" min="0" max="100" placeholder="0" required />
+            </div>
+            <div class="col-md-6">
+                <label for="p4" class="form-label">Процент для игрока 4</label>
+                <input type="number" step="any" id="p4" class="form-control" min="0" max="100" placeholder="0" required />
+            </div>
+        </div>
+
+        <button type="button" onclick="calculateLake()" class="btn btn-success mt-3 w-100">Расчитать</button>
+    </form>
+
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО -->
+    <div id="resultModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Результат расчёта</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="resultBody">
+                    <!-- Результат будет тут -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function calculateLake() {
+            // Получаем значения
+            const dateInput = document.getElementById('lakeDate').value;
+            const days = parseFloat(document.getElementById('days').value);
+            const p1 = parseFloat(document.getElementById('p1').value) || 0;
+            const p2 = parseFloat(document.getElementById('p2').value) || 0;
+            const p3 = parseFloat(document.getElementById('p3').value) || 0;
+            const p4 = parseFloat(document.getElementById('p4').value) || 0;
+
+            // Проверка
+            if (!dateInput || isNaN(days) || days <= 0) {
+                alert('Введите корректную дату и количество дней!');
+                return;
+            }
+
+            const totalPercent = p1 + p2 + p3 + p4;
+            if (totalPercent <= 0) {
+                alert('Хотя бы один игрок должен иметь процент > 0');
+                return;
+            }
+            if (totalPercent > 100) {
+                alert('Сумма процентов не может быть больше 100%');
+                return;
+            }
+
+            // Расчёт дней (округляем до 2 знаков)
+            const d1 = Math.round((p1 / totalPercent) * days * 100) / 100;
+            const d2 = Math.round((p2 / totalPercent) * days * 100) / 100;
+            const d3 = Math.round((p3 / totalPercent) * days * 100) / 100;
+            const d4 = Math.round((p4 / totalPercent) * days * 100) / 100;
+
+            // Работа с датами
+            let currentDate = new Date(dateInput);
+            const players = [
+                { num: 1, days: d1, percent: p1 },
+                { num: 2, days: d2, percent: p2 },
+                { num: 3, days: d3, percent: p3 },
+                { num: 4, days: d4, percent: p4 }
+            ].filter(p => p.percent > 0);  // Только с процентом > 0
+
+            // Формат даты DD.MM.YYYY
+            const formatDate = (date) => {
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                return `${dd}.${mm}.${yyyy}`;
+            };
+
+            // Результат
+            let result = `<p class="mb-2"><strong>Озеро:</strong> ${days} дней с ${formatDate(currentDate)}</p><hr class="my-2">`;
+
+            players.forEach(player => {
+                result += `<p>Игрок ${player.num}: <strong>${player.days} дней</strong> (${player.percent}%) ${formatDate(currentDate)}</p>`;
+                currentDate.setDate(currentDate.getDate() + Math.ceil(player.days));  // Добавляем дни (округляем вверх для целых дней)
+            });
+
+            // Показать модалку
+            document.getElementById('resultBody').innerHTML = result;
+            new bootstrap.Modal(document.getElementById('resultModal')).show();
+        }
+    </script>
+}

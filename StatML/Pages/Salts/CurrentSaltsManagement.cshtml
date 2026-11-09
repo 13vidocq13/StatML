@@ -1,0 +1,128 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model StatML.Pages.Salts.CurrentSaltsManagementModel
+@attribute [Authorize(Policy = "Observer")]
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="@Url.Content("~/css/General.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/css/salts-collapse.css")" />
+    <style>
+        .hidden { display: none; }
+    </style>
+}
+
+<h1>Статистика озер</h1>
+    <p>
+        @if (User.IsInRole("Admin") || User.IsInRole("SaltsEditor"))
+        {
+            <a asp-page="/Salts/Create">Добавить данные о озере</a> <span> | </span>
+            <a asp-page="/Salts/CreateParts">Посчитать озеро</a> <span> | </span>
+        }
+    
+        <a asp-page="/Grails/Advices">Совет?</a> | <a asp-page="/Salts/General">Общая статистика по озерам</a>
+    </p>
+    
+    <div class="stats-container">
+    <div class="card">
+        <div class="table-container @(User.IsInRole("Admin") ? "admin-user" : "") @(User.IsInRole("SaltsEditor") ? "editor-user" : "")">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Координаты</th>
+                        <th class="hidden">SaltId</th> <!-- salt.Id -->
+                        <th class="hidden">ParentSaltId</th> <!-- salt.saltId -->
+                        <th>Ник</th>
+                        <th>Дней</th>
+                        <th>Дата</th>
+                        @if (User.IsInRole("Admin") || User.IsInRole("SaltsEditor"))
+                        {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th data-role="admin">Добавлено</th>
+                                <th data-role="admin">Редактировано</th>
+                            }
+
+                            <th @* data-role="admin" *@>Действия</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var salt in Model.Salts.Items)
+                    {
+                        <tr data-group="@salt.SaltId" data-id="@salt.Id">
+                            <td><b>@salt.HorizontalPosition-@salt.VerticalPosition</b></td>
+                            <td class="hidden">@salt.Id</td> <!-- salt.Id -->
+                            <td class="hidden">@salt.SaltId</td> <!-- salt.saltId -->
+                            <td><a asp-page="/Players/Details" asp-route-id="@salt.PlayerId">@salt.PlayerEntity.PName</a></td>
+                            <td>@salt.DaysForPlayer</td>
+                            <td>@salt.DateSalt</td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("SaltsEditor"))
+                            {
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td data-role="admin">@salt.CreatorLoginEntity.Email</td>
+                                    <td data-role="admin">@(salt.EditorId != null ? salt.EditorLoginEntity.Email : "")</td>
+                                }
+
+                                <td @* data-role="admin" *@>
+                                    @if (salt.Id == salt.SaltId)
+                                    {
+                                        <a asp-page="/Salts/Create" asp-route-saltId="@salt.Id" class="btn btn-primary">Добавить к...</a> <span> | </span>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Salts/Create" asp-route-saltId="@salt.Id" class="btn btn-primary disabled">Добавить к...</a> <span> | </span>
+                                    }
+                                    <a asp-page="/Salts/Edit" asp-route-id="@salt.Id" class="btn btn-primary">Редактировать</a> |
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                            <input type="hidden" name="id" value="@salt.Id" />
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
+                                        </form>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="pagination">
+            @if (Model.Salts.HasPreviousPage)
+            {
+                <a asp-page="/Salts/CurrentSaltsManagement" asp-route-pageIndex="@(Model.Salts.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.Salts.TotalPages; i++)
+            {
+                if (i == Model.Salts.PageIndex)
+                {
+                    <span class="btn btn-primary disabled">@i</span>
+                }
+                else
+                {
+                    <a asp-page="/Salts/CurrentSaltsManagement" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
+                }
+            }
+
+            @if (Model.Salts.HasNextPage)
+            {
+                <a asp-page="/Salts/CurrentSaltsManagement" asp-route-pageIndex="@(Model.Salts.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
+        </div>
+        </div>
+        <p><a asp-page="/Salts/General">Назад</a> | <a asp-page="/Salts/ManagementArchive">Архив озер</a></p>
+    </div>
+</div>
+@section Scripts {
+    <script src="@Url.Content("~/js/salts-collapse.js")"></script>
+}

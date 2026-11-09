@@ -1,0 +1,59 @@
+﻿/* wwwroot/css/salts-collapse.css */
+
+.group-header {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    border-bottom: 2px solid #90caf9;
+}
+
+    .group-header:hover {
+        background: linear-gradient(135deg, #bbdefb, #90caf9) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
+
+    .group-header .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 15px;
+    }
+
+    .group-header .coords {
+        color: #1565c0;
+        font-weight: bold;
+    }
+
+    .group-header .players {
+        color: #444;
+        font-size: 0.95em;
+        flex-grow: 1;
+        margin-left: 10px;
+    }
+
+    .group-header .count {
+        color: #666;
+        margin-left: 8px;
+        font-size: 0.9em;
+    }
+
+    .group-header .toggle-icon {
+        font-size: 18px;
+        color: #1976d2;
+        transition: transform 0.3s ease;
+    }
+
+    .group-header.open .toggle-icon {
+        transform: rotate(180deg);
+    }
+
+/* УБИРАЕМ ВСЁ ПРО ФОН — JS УПРАВЛЯЕТ */
+.table tbody tr,
+.group-detail,
+.table-striped tbody tr:nth-child(even),
+.table-striped tbody tr:nth-child(odd) {
+    background-color: transparent !important;
+}

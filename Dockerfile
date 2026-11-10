@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/playwright/dotnet:v1.40.0-jammy AS build
 WORKDIR /src
 
 # Копируем файл решения и проект
@@ -13,9 +13,12 @@ RUN dotnet build "StatML.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "StatML.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
+FROM mcr.microsoft.com/playwright/dotnet:v1.40.0-jammy AS final
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
+
+# Копируем скомпилированное приложение из этапа сборки
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "StatML.dll"]

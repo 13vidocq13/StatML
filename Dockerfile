@@ -1,3 +1,4 @@
+Dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
@@ -18,4 +19,11 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 COPY --from=publish /app/publish .
+
+# === ДОБАВЛЯЕМ УСТАНОВКУ PLAYWRIGHT И БРАУЗЕРА ===
+RUN dotnet tool install --global Microsoft.Playwright.CLI
+ENV PATH="$PATH:/root/.dotnet/tools"
+RUN playwright install --with-deps
+# ===============================================
+
 ENTRYPOINT ["dotnet", "StatML.dll"]

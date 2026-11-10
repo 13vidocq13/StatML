@@ -54,7 +54,7 @@
             <div class="pagination">
                 @if (Model.Artifacts.HasPreviousPage)
                 {
-                    <a asp-page="/Artifacts/Management" " asp-route-pageIndex="@(Model.Artifacts.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    <a asp-page="/Artifacts/Management" asp-route-pageIndex="@(Model.Artifacts.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
                 }
                 else
                 {

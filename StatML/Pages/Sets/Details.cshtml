@@ -35,7 +35,7 @@
             <div class="pagination">
                 @if (Model.Sets.HasPreviousPage)
                 {
-                    <a asp-page="/Sets/Details" " asp-route-pageIndex="@(Model.Sets.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    <a asp-page="/Sets/Details" asp-route-pageIndex="@(Model.Sets.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
                 }
                 else
                 {

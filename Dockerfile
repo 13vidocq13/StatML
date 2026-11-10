@@ -21,14 +21,4 @@ EXPOSE 443
 # Копируем скомпилированное приложение
 COPY --from=publish /app/publish .
 
-# Устанавливаем PowerShell (нужен для запуска скрипта playwright.ps1 в aspnet-образе)
-RUN apt-get update && apt-get install -y wget curl libicu-dev && \
-    wget -q https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    apt-get update && apt-get install -y powershell && \
-    rm packages-microsoft-prod.deb
-
-# Запускаем скрипт установки браузеров Playwright со всеми системными зависимостями прямо в финальном образе
-RUN pwsh /app/playwright.ps1 install --with-deps
-
 ENTRYPOINT ["dotnet", "StatML.dll"]

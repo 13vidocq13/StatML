@@ -10,7 +10,7 @@ COPY . .
 WORKDIR "/src/StatML"
 RUN dotnet build "StatML.csproj" -c Release -o /app/build
 
-# Устанавливаем Playwright CLI и загружаем браузеры с зависимостями прямо на этапе сборки SDK
+# Устанавливаем Playwright CLI и загружаем браузеры ТЕПЕРЬ, когда проект уже собран
 RUN dotnet tool install --global Microsoft.Playwright.CLI
 ENV PATH="$PATH:/root/.dotnet/tools"
 RUN playwright install --with-deps

@@ -3,10 +3,9 @@
 @model StatML.Pages.Tournaments.DetailsModel
 @attribute [Authorize(Policy = "Everyone")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
+@section Scripts {
     <script type="text/javascript">
-                document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('.table tbody tr');
             const dateMap = new Map();
             let colorIndex = 0;
@@ -23,79 +22,78 @@
             });
         });
     </script>
-</head>
-<body>
-    <h1>Сдача флагов</h1>
-    @* <p>
-        <button type="submit" asp-page-handler="Upload">Импорт турнира из файла</button>
-    </p> *@
-    @if (User.IsInRole("Admin"))
-    {
-        <form method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="file">Экспорт из таблицы(Выберите файл Excel (.xlsx)):</label>
-                <input type="file" name="file" class="form-control" accept=".xlsx" />
-            </div>
+}
 
-            <button type="submit" asp-page-handler="Upload" class="btn btn-primary">Загрузить</button>
-        </form>
-    }
-    
-    <div class="stats-container">
-        <div class="card">
-            <table class="table-zebra">
-                <thead>
+<link rel="stylesheet" href="~/css/General.css" />
+
+<h1>Сдача флагов</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">Экспорт из таблицы(Выберите файл Excel (.xlsx)):</label>
+            <input type="file" name="file" class="form-control" accept=".xlsx" />
+        </div>
+
+        <button type="submit" asp-page-handler="Upload" class="btn btn-primary">Загрузить</button>
+    </form>
+}
+
+<div class="stats-container">
+    <div class="card">
+        <table class="table-zebra">
+            <thead>
+                <tr>
+                    <th>Игрок</th>
+                    <th>Редкие флаги</th>
+                    <th>Обычные флаги</th>
+                    <th>Самосборы</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Players.Items)
+                {
                     <tr>
-                        <th>Игрок</th>
-                        <th>Редкие флаги</th>
-                        <th>Обычные флаги</th>
-                        <th>Самосборы</th>
+                        <td><a asp-page="/Players/Details" asp-route-id="@item.Id">@item.PName</a></td>
+                        <td>@item.FlagTournamentDetailsEntities.Sum(d => d.CountOfOtherFlags)</td>
+                        <td>@item.FlagTournamentDetailsEntities.Sum(d => d.CountOfBasicFlags)</td>
+                        <td>@item.FlagTournamentDetailsEntities.Sum(d => d.CountOfNotGivenFlags)</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Players.Items)
-                    {
-                        <tr>
-                            <td><a asp-page="/Players/Details" asp-route-id="@item.Id">@item.PName</a></td>
-                            <td>@item.FlagTournamentDetailsEntities.Sum(d => d.CountOfOtherFlags)</td>
-                            <td>@item.FlagTournamentDetailsEntities.Sum(d => d.CountOfBasicFlags)</td>
-                            <td>@item.FlagTournamentDetailsEntities.Sum(d => d.CountOfNotGivenFlags)</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="pagination">
-                @if (Model.Players.HasPreviousPage)
+                }
+            </tbody>
+        </table>
+        <div class="pagination">
+            @if (Model.Players.HasPreviousPage)
+            {
+                <a asp-page="/Tournaments/Details" asp-route-pageIndex="@(Model.Players.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.Players.TotalPages; i++)
+            {
+                if (i == Model.Players.PageIndex)
                 {
-                    <a asp-page="/Tournaments/Details" asp-route-pageIndex="@(Model.Players.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    <span class="btn btn-primary disabled">@i</span>
                 }
                 else
                 {
-                    <span class="btn btn-primary disabled">&laquo; Назад</span>
+                    <a asp-page="/Tournaments/Details" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
                 }
+            }
 
-                @for (int i = 1; i <= Model.Players.TotalPages; i++)
-                {
-                    if (i == Model.Players.PageIndex)
-                    {
-                        <span class="btn btn-primary disabled">@i</span>
-                    }
-                    else
-                    {
-                        <a asp-page="/Tournaments/Details" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
-                    }
-                }
-
-                @if (Model.Players.HasNextPage)
-                {
-                    <a asp-page="/Tournaments/Details" asp-route-pageIndex="@(Model.Players.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
-                }
-            </div>
+            @if (Model.Players.HasNextPage)
+            {
+                <a asp-page="/Tournaments/Details" asp-route-pageIndex="@(Model.Players.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
         </div>
     </div>
-    <p><a asp-page="/Index">Назад</a></p>
-</body>
+</div>
+<p><a asp-page="/Index">Назад</a></p>

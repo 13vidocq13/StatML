@@ -3,36 +3,36 @@
 @model StatML.Pages.Grails.CreateModel
 @attribute [Authorize(Policy = "GrailsEditor")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
+<link rel="stylesheet" href="~/css/General.css" />
 
-<body>
-    <h1>Добавить грааль</h1>
-    <form method="post">
-        <div class="form-group">
-            <label asp-for="Grail.PlayerId">Владелец</label>
-            <select asp-for="Grail.PlayerId" asp-items="Model.Players" class="form-control">
-                <option value="">-- Выберите игрока --</option>
-            </select>
-            <span asp-validation-for="Grail.PlayerId" class="text-danger"></span>
-            <label asp-for="Grail.HorizontalPosition">Горизонтальная позиция</label>
-            <input asp-for="Grail.HorizontalPosition" class="form-control" />
-            <span asp-validation-for="Grail.HorizontalPosition" class="text-danger"></span>
-            <label asp-for="Grail.VerticalPosition">Вертикальная позиция</label>
-            <input asp-for="Grail.VerticalPosition" class="form-control" />
-            <span asp-validation-for="Grail.VerticalPosition" class="text-danger"></span>
-            <label asp-for="Grail.DateGrail">Дата</label>
-            <input asp-for="Grail.DateGrail" class="form-control" placeholder="дд.мм.гггг" />
-            <span asp-validation-for="Grail.DateGrail" class="text-danger"></span>
-            <label asp-for="Grail.HoursForPlayer">Примерное количество часов</label>
-            <input asp-for="Grail.HoursForPlayer" class="form-control" />
-            <span asp-validation-for="Grail.HoursForPlayer" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a asp-page="/Index" class="btn btn-secondary">Отмена</a>
-    </form>
-</body>
+<h1>Добавить грааль</h1>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Grail.PlayerId">Владелец</label>
+        <select asp-for="Grail.PlayerId" asp-items="Model.Players" class="form-control">
+            <option value="">-- Выберите игрока --</option>
+        </select>
+        <span asp-validation-for="Grail.PlayerId" class="text-danger"></span>
+
+        <label asp-for="Grail.HorizontalPosition">Горизонтальная позиция</label>
+        <input asp-for="Grail.HorizontalPosition" class="form-control" />
+        <span asp-validation-for="Grail.HorizontalPosition" class="text-danger"></span>
+
+        <label asp-for="Grail.VerticalPosition">Вертикальная позиция</label>
+        <input asp-for="Grail.VerticalPosition" class="form-control" />
+        <span asp-validation-for="Grail.VerticalPosition" class="text-danger"></span>
+
+        <label asp-for="Grail.DateGrail">Дата</label>
+        <input asp-for="Grail.DateGrail" class="form-control" placeholder="дд.мм.гггг" />
+        <span asp-validation-for="Grail.DateGrail" class="text-danger"></span>
+
+        <label asp-for="Grail.HoursForPlayer">Примерное количество часов</label>
+        <input asp-for="Grail.HoursForPlayer" class="form-control" />
+        <span asp-validation-for="Grail.HoursForPlayer" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-page="/Index" class="btn btn-secondary">Отмена</a>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

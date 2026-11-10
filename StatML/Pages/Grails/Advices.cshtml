@@ -3,68 +3,63 @@
 @model StatML.Pages.Grails.AdvicesModel
 @attribute [Authorize(Policy = "GrailsEditor")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
+<link rel="stylesheet" href="~/css/General.css" />
 
-<body>
-    <h1>Координаты грааля/озера</h1>
+<h1>Координаты грааля/озера</h1>
 
-    <form method="post">
-        <div class="form-group">
-            <label for="inputX">Горизонтальная позиция</label>
-            <input type="number" step="any" id="inputX" name="inputX" asp-for="InputX" class=" form-control" required />
-        </div>
-        <div class="form-group">
-            <label for="inputY">Вертикальная позиция</label>
-            <input type="number" step="any" id="inputY" name="inputY" asp-for="InputY" class="form-control" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Показать игроков</button>
-    </form>
-    <div class="stats-container">
-        <div class="card">
-            @if (Model.Players != null && Model.Players.Any())
-            {
-                <h2>Найденные игроки (дистанция ≤ 16):</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Игровой ник</th>
-                            <th>Столица</th>
-                            <th>Дистанция</th>
-                            <th>Всего граалей</th>
-                            <th>Всего ЧЖ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var player in Model.Players)
-                        {
-                            var horizontalDistance = player.HorizontalPosition - Model.InputX >= 0 ? player.HorizontalPosition - Model.InputX : Model.InputX - player.HorizontalPosition;
-                            var verticalDistance = player.VerticalPosition - Model.InputY >= 0 ? player.VerticalPosition - Model.InputY : Model.InputY - player.VerticalPosition;
-
-                            var distance = player.HorizontalPosition - Model.InputX >= 0 ? player.HorizontalPosition - Model.InputX : Model.InputX - player.HorizontalPosition;
-                            var grialCount = player.GrailEntities.Count;
-                            var blackGem = player.GrailEntities.Sum(x => x.HoursForPlayer) * 200 + player.SaltEntities.Sum(x => x.DaysForPlayer) * 20 * 24;
-
-                            <tr>
-                                <td><a href="/Players/Details/@player.Id">@player.PName</a></td>
-                                <td>@player.HorizontalPosition-@player.VerticalPosition</td>
-                                <td>@(horizontalDistance >= verticalDistance ? horizontalDistance : verticalDistance)</td>
-                                <td>@grialCount.ToString()</td>
-                                <td>@((int)blackGem)</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            @if (Model.FarmZoneOwner != null)
-            {
-                <h2>Фарм-зона: @Model.FarmZoneOwner.PName положено: 5 часов, либо @Model.FarmZoneOwner.PercentSaltsGrails %</h2>
-            }
-        </div>
+<form method="post">
+    <div class="form-group">
+        <label for="inputX">Горизонтальная позиция</label>
+        <input type="number" step="any" id="inputX" name="inputX" asp-for="InputX" class="form-control" required />
     </div>
-    <p><a asp-page="/Grails/General">Назад</a></p>
-</body>
+    <div class="form-group">
+        <label for="inputY">Вертикальная позиция</label>
+        <input type="number" step="any" id="inputY" name="inputY" asp-for="InputY" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Показать игроков</button>
+</form>
 
+<div class="stats-container">
+    <div class="card">
+        @if (Model.Players != null && Model.Players.Any())
+        {
+            <h2>Найденные игроки (дистанция ≤ 16):</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Игровой ник</th>
+                        <th>Столица</th>
+                        <th>Дистанция</th>
+                        <th>Всего граалей</th>
+                        <th>Всего ЧЖ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in Model.Players)
+                    {
+                        var horizontalDistance = player.HorizontalPosition - Model.InputX >= 0 ? player.HorizontalPosition - Model.InputX : Model.InputX - player.HorizontalPosition;
+                        var verticalDistance = player.VerticalPosition - Model.InputY >= 0 ? player.VerticalPosition - Model.InputY : Model.InputY - player.VerticalPosition;
 
+                        var grialCount = player.GrailEntities.Count;
 
+                        // Исправлена математическая формула и синтаксис C#
+                        var blackGem = (player.GrailEntities.Sum(x => x.HoursForPlayer) * 200.0) + (player.SaltEntities.Sum(x => x.DaysForPlayer) / 20.0 * 24.0);
+
+                        <tr>
+                            <td><a href="/Players/Details/@player.Id">@player.PName</a></td>
+                            <td>@player.HorizontalPosition-@player.VerticalPosition</td>
+                            <td>@(horizontalDistance >= verticalDistance ? horizontalDistance : verticalDistance)</td>
+                            <td>@grialCount.ToString()</td>
+                            <td>@((int)blackGem)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        @if (Model.FarmZoneOwner != null)
+        {
+            <h2>Фарм-зона: @Model.FarmZoneOwner.PName положено: 5 часов, либо @Model.FarmZoneOwner.PercentSaltsGrails %</h2>
+        }
+    </div>
+</div>
+<p><a asp-page="/Grails/General">Назад</a></p>

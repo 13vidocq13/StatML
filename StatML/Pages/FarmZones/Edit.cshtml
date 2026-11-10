@@ -1,24 +1,23 @@
 ﻿@page
 @model StatML.Pages.FarmZones.EditModel
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
 
-<body>
-    <h1>Редактировать Фарм-зону</h1>
-    <form method="post">
-        <input type="hidden" asp-for="Player.Id" />
-        <div class="form-group">
-            <label asp-for="Player.PName">Игровой ник</label>
-            <input asp-for="Player.PName" class="form-control" disabled ="disabled" />
-            <span asp-validation-for="Player.PName" class="text-danger"></span>
-            <label asp-for="Player.HorizontalPosition">Введите координаты фарм-зоны игрока через запятую(например 1-1, 2-2, 3-3...)</label>
-            <input id="FarmZone" name="FarmZone" class="form-control" value="@ViewData["farmZone"]" />
-        </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a asp-page="/Players/Management" class="btn btn-secondary">Отмена</a>
-    </form>
-</body>
+<link rel="stylesheet" href="~/css/General.css" />
+
+<h1>Редактировать Фарм-зону</h1>
+<form method="post">
+    <input type="hidden" asp-for="Player.Id" />
+    <div class="form-group">
+        <label asp-for="Player.PName">Игровой ник</label>
+        <input asp-for="Player.PName" class="form-control" disabled="disabled" />
+        <span asp-validation-for="Player.PName" class="text-danger"></span>
+
+        <label asp-for="Player.HorizontalPosition">Введите координаты фарм-зоны игрока через запятую (например 1-1, 2-2, 3-3...)</label>
+        <input id="FarmZone" name="FarmZone" class="form-control" value="@ViewData["farmZone"]" />
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-page="/Players/Management" class="btn btn-secondary">Отмена</a>
+</form>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

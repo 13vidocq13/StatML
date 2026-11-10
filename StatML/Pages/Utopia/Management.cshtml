@@ -2,109 +2,112 @@
 @using Microsoft.AspNetCore.Authorization
 @model StatML.Pages.Utopia.ManagementModel
 @attribute [Authorize(Policy = "Observer")]
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
+
+<link rel="stylesheet" href="~/css/General.css" />
+
+<h1>Управление утопиями</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-page="/Utopia/Create">Добавить данные об утопии</a>
+    </p>
+}
+
+<div class="stats-container">
+    <div class="card">
+        <table class="table-zebra">
+            <thead>
+                <tr>
+                    <th>Игрок 1</th>
+                    <th style="width: 120px;">Артефакты</th>
+                    <th>Игрок 2</th>
+                    <th style="width: 120px;">Артефакты</th>
+                    <th>Дата</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Действия</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var utopia in Model.Utopias.Items)
+                {
+                    <tr data-date="@utopia.DateOnly">
+                        <td><a asp-page="/Players/Details" asp-route-id="@utopia.PlayerEntity1.Id">@utopia.PlayerEntity1.PName</a></td>
+                        <td style="width: 120px;">@( $"{utopia.ArtifactLevel1}, {utopia.ArtifactLevel2}, {utopia.ArtifactLevel3} Ур.")</td>
+                        <td><a asp-page="/Players/Details" asp-route-id="@utopia.PlayerEntity2.Id">@utopia.PlayerEntity2.PName</a></td>
+                        <td style="width: 120px;">@( $"{utopia.ArtifactLevel4}, {utopia.ArtifactLevel5}, {utopia.ArtifactLevel6} Ур.")</td>
+                        <td>@utopia.DateOnly</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a asp-page="/Utopia/Edit" asp-route-id="@(utopia?.Id ?? 0)">Редактировать</a> |
+                                <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@(utopia?.Id ?? 0)" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
+                                </form>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="pagination">
+            @if (Model.Utopias.HasPreviousPage)
+            {
+                <a asp-page="/Utopia/Management" asp-route-pageIndex="@(Model.Utopias.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.Utopias.TotalPages; i++)
+            {
+                if (i == Model.Utopias.PageIndex)
+                {
+                    <span class="btn btn-primary disabled">@i</span>
+                }
+                else
+                {
+                    <a asp-page="/Utopia/Management" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
+                }
+            }
+
+            @if (Model.Utopias.HasNextPage)
+            {
+                <a asp-page="/Utopia/Management" asp-route-pageIndex="@(Model.Utopias.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
+        </div>
+    </div>
+</div>
+<p><a asp-page="/Index">Назад</a></p>
+
+@section Scripts {
     <script type="text/javascript">
-                document.addEventListener('DOMContentLoaded', () => {
-            const rows = document.querySelectorAll('.table tbody tr');
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll('.table-zebra tbody tr');
             const dateMap = new Map();
             let colorIndex = 0;
 
             // Сбор уникальных дат
             rows.forEach(row => {
-                const dateCell = row.querySelector('td:nth-child(6)');
-                const date = dateCell.textContent.trim();
-                if (!dateMap.has(date)) {
-                    dateMap.set(date, colorIndex % 2 === 0 ? '#FFFFFF' : '#E0F7FA');
-                    colorIndex++;
+                const dateCell = row.querySelector('td:nth-child(5)');
+                if (dateCell) {
+                    const date = dateCell.textContent.trim();
+                    if (!dateMap.has(date)) {
+                        dateMap.set(date, colorIndex % 2 === 0 ? '#FFFFFF' : '#E0F7FA');
+                        colorIndex++;
+                    }
+                    row.style.backgroundColor = dateMap.get(date);
                 }
-                row.style.backgroundColor = dateMap.get(date);
             });
         });
     </script>
-</head>
-<body>
-    <h1>Управление утопиями</h1>
-    
-    @if (User.IsInRole("Admin"))
-    {
-        <p>
-            <a asp-page="/Utopia/Create">Добавить данные о утопии</a>
-        </p>
-    }
-
-    <div class="stats-container">
-        <div class="card">
-            <table class="table-zebra">
-                <thead>
-                    <tr>
-                        <th>Игрок 1</th>
-                        <th style="width: 120px;">Артефакты</th>
-                        <th>Игрок 2</th>
-                        <th style="width: 120px;">Артефакты</th>
-                        <th>Дата</th>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <th>Действия</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var utopia in Model.Utopias.Items)
-                    {
-                        <tr data-date="@utopia.DateOnly">
-                            <td><a asp-page="/Players/Details" asp-route-id="@utopia.PlayerEntity1.Id">@utopia.PlayerEntity1.PName</a></td>
-                            <td style="width: 120px;">@( $"{utopia.ArtifactLevel1}, {utopia.ArtifactLevel2}, {utopia.ArtifactLevel3} Ур.")</td>
-                            <td><a asp-page="/Players/Details" asp-route-id="@utopia.PlayerEntity2.Id">@utopia.PlayerEntity2.PName</a></td>
-                            <td style="width: 120px;">@( $"{utopia.ArtifactLevel4}, {utopia.ArtifactLevel5}, {utopia.ArtifactLevel6} Ур.")</td>
-                            <td>@utopia.DateOnly</td>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <td>
-                                    <a asp-page="/Utopia/Edit" asp-route-id="@(utopia?.Id ?? 0)">Редактировать</a> |
-                                    <form method="post" asp-page-handler="Delete" style="display:inline;">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@(utopia?.Id ?? 0)" />
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
-                                    </form>
-                                </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="pagination">
-                @if (Model.Utopias.HasPreviousPage)
-                {
-                    <a asp-page="/Utopia/Management" asp-route-pageIndex="@(Model.Utopias.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">&laquo; Назад</span>
-                }
-
-                @for (int i = 1; i <= Model.Utopias.TotalPages; i++)
-                {
-                    if (i == Model.Utopias.PageIndex)
-                    {
-                        <span class="btn btn-primary disabled">@i</span>
-                    }
-                    else
-                    {
-                        <a asp-page="/Utopia/Management" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
-                    }
-                }
-
-                @if (Model.Utopias.HasNextPage)
-                {
-                    <a asp-page="/Utopia/Management" asp-route-pageIndex="@(Model.Utopias.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
-                }
-            </div>
-        </div>
-    </div>
-    <p><a asp-page="/Index">Назад</a></p>
-</body> 
+}

@@ -3,25 +3,23 @@
 @model StatML.Pages.Sets.CreateModel
 @attribute [Authorize(Policy = "AdminOnly")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
+<link rel="stylesheet" href="~/css/General.css" />
 
-<body>
-    <h1>Добавить комплект</h1>
-    <form method="post">
-        <div class="form-group">
-            <label asp-for="Sett.Name">Название</label>
-            <input asp-for="Sett.Name" class="form-control" />
-            <span asp-validation-for="Sett.Name" class="text-danger"></span>
-            <label asp-for="Sett.Level">Уровень</label>
-            <input asp-for="Sett.Level" class="form-control" />
-            <span asp-validation-for="Sett.Level" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a asp-page="/Sets/Management" class="btn btn-secondary">Отмена</a>
-    </form>
-</body>
+<h1>Добавить комплект</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Sett.Name">Название</label>
+        <input asp-for="Sett.Name" class="form-control" />
+        <span asp-validation-for="Sett.Name" class="text-danger"></span>
+
+        <label asp-for="Sett.Level">Уровень</label>
+        <input asp-for="Sett.Level" class="form-control" />
+        <span asp-validation-for="Sett.Level" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-page="/Sets/Management" class="btn btn-secondary">Отмена</a>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

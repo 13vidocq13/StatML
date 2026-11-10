@@ -3,38 +3,43 @@
 @model StatML.Pages.Players.EditModel
 @attribute [Authorize(Policy = "AdminOnly")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
+<link rel="stylesheet" href="~/css/General.css" />
 
-<body>
-    <h1>Редактировать игрока</h1>
-    <form method="post">
-        <input type="hidden" asp-for="Player.Id" />
-        <div class="form-group">
-            <label asp-for="Player.PName">Имя</label>
-            <input asp-for="Player.PName" class="form-control" />
-            <span asp-validation-for="Player.PName" class="text-danger"></span>
-            <label asp-for="Player.HorizontalPosition">Горизонтальная позиция</label>
-            <input asp-for="Player.HorizontalPosition" class="form-control" />
-            <span asp-validation-for="Player.HorizontalPosition" class="text-danger"></span>
-            <label asp-for="Player.VerticalPosition">Вертикальная позиция</label>
-            <input asp-for="Player.VerticalPosition" class="form-control" />
-            <span asp-validation-for="Player.VerticalPosition" class="text-danger"></span>
-            <label asp-for="Player.Clan">Клан</label>
-            <input asp-for="Player.Clan" class="form-control" />
-            <span asp-validation-for="Player.Clan" class="text-danger"></span>
-            <label asp-for="Player.PercentSaltsGrails">Положенный процент</label>
-            <input asp-for="Player.PercentSaltsGrails" class="form-control" />
-            <span asp-validation-for="Player.PercentSaltsGrails" class="text-danger"></span>
-            <label asp-for="Player.IsGeneral">В распределении?</label>
-            <input type="checkbox" asp-for="Player.IsGeneral" />
-            <span asp-validation-for="Player.IsGeneral" class="text-danger"></span>
+<h1>Редактировать игрока</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Player.Id" />
+    <div class="form-group">
+        <label asp-for="Player.PName">Имя</label>
+        <input asp-for="Player.PName" class="form-control" />
+        <span asp-validation-for="Player.PName" class="text-danger"></span>
+
+        <label asp-for="Player.HorizontalPosition">Горизонтальная позиция</label>
+        <input asp-for="Player.HorizontalPosition" class="form-control" />
+        <span asp-validation-for="Player.HorizontalPosition" class="text-danger"></span>
+
+        <label asp-for="Player.VerticalPosition">Вертикальная позиция</label>
+        <input asp-for="Player.VerticalPosition" class="form-control" />
+        <span asp-validation-for="Player.VerticalPosition" class="text-danger"></span>
+
+        <label asp-for="Player.Clan">Клан</label>
+        <input asp-for="Player.Clan" class="form-control" />
+        <span asp-validation-for="Player.Clan" class="text-danger"></span>
+
+        <label asp-for="Player.PercentSaltsGrails">Положенный процент</label>
+        <input asp-for="Player.PercentSaltsGrails" class="form-control" />
+        <span asp-validation-for="Player.PercentSaltsGrails" class="text-danger"></span>
+
+        <div class="form-check mt-2">
+            <input type="checkbox" asp-for="Player.IsGeneral" class="form-check-input" />
+            <label asp-for="Player.IsGeneral" class="form-check-label">В распределении?</label>
         </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a asp-page="/Players/Management" class="btn btn-secondary">Отмена</a>
-    </form>
-</body>
+        <span asp-validation-for="Player.IsGeneral" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-page="/Players/Management" class="btn btn-secondary">Отмена</a>
+</form>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

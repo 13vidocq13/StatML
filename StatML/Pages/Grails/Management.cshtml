@@ -3,23 +3,21 @@
 @model StatML.Pages.Grails.ManagementModel
 @attribute [Authorize(Policy = "Observer")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
-<body>
-    <h1>Статистика граалей</h1>
-    <p>
-        @if (User.IsInRole("Admin") || User.IsInRole("GrailsEditor"))
-        {
-            <a asp-page="/Grails/Create">Добавить данные о граале</a> <span>|</span>
-        }
-        
-        <a asp-page="/Grails/Advices">Совет?</a> | <a asp-page="/Grails/General">Общая статистика по граалям</a>
-    </p>
+<link rel="stylesheet" href="~/css/General.css" />
 
-    <div class="stats-container">
-        <div class="card">
-            <div class="table-container @(User.IsInRole("Admin") ? "admin-user" : "") @(User.IsInRole("SaltsEditor") ? "editor-user" : "")">
+<h1>Статистика граалей</h1>
+<p>
+    @if (User.IsInRole("Admin") || User.IsInRole("GrailsEditor"))
+    {
+        <a asp-page="/Grails/Create">Добавить данные о граале</a> <span>|</span>
+    }
+
+    <a asp-page="/Grails/Advices">Совет?</a> | <a asp-page="/Grails/General">Общая статистика по граалям</a>
+</p>
+
+<div class="stats-container">
+    <div class="card">
+        <div class="table-container @(User.IsInRole("Admin") ? "admin-user" : "") @(User.IsInRole("SaltsEditor") ? "editor-user" : "")">
             <table class="table-zebra">
                 <thead>
                     <tr>
@@ -101,8 +99,4 @@
         </div>
     </div>
 </div>
-    <p><a asp-page="/Grails/General">Назад</a></p>
-</body>
-
-
-
+<p><a asp-page="/Grails/General">Назад</a></p>

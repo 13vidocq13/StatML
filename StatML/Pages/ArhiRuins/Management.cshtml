@@ -2,10 +2,97 @@
 @using Microsoft.AspNetCore.Authorization
 @model StatML.Pages.ArhiRuins.ManagementModel
 @attribute [Authorize(Policy = "Observer")]
-<head>
-    @* <link rel="stylesheet" href="~/css/General.css" /> *@
+
+<link rel="stylesheet" href="~/css/General.css" />
+
+<h1>Статистика сноса архи-руин</h1>
+
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="/ArhiRuins/Create">Добавить данные о архи-руине</a>
+    }
+</p>
+
+<div class="stats-container">
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ник</th>
+                    <th>Координаты</th>
+                    <th>Количество ЧЖ</th>
+                    <th>Дата</th>
+                    <th>Дней с предыдущей</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Действия</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var arhiRuin in Model.ArhiRuins.Items)
+                {
+                    var daysFromPreviousArhiRuin = Model.DaysFromLastArhiRuin?.FirstOrDefault(x => x.ArhiRuinId == arhiRuin.Id)?.Days ?? 0;
+
+                    <tr data-date="@arhiRuin.DateOnly">
+                        <td><a asp-page="/Players/Management" asp-route-pageIndex="@arhiRuin.PlayerEntity.Id">@arhiRuin.PlayerEntity.PName</a></td>
+                        <td>@(arhiRuin.HorizontalPosition)-@(arhiRuin.VerticalPosition)</td>
+                        <td>@(arhiRuin.BlackGemCount)</td>
+                        <td>@(arhiRuin.DateOnly)</td>
+                        <td>@(daysFromPreviousArhiRuin)</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a asp-page="/ArhiRuins/Edit" asp-route-id="@arhiRuin.Id">Редактировать</a> |
+                                <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                    <input type="hidden" name="id" value="@arhiRuin.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
+                                </form>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="pagination">
+            @if (Model.ArhiRuins.HasPreviousPage)
+            {
+                <a asp-page="/ArhiRuins/Management" asp-route-pageIndex="@(Model.ArhiRuins.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.ArhiRuins.TotalPages; i++)
+            {
+                if (i == Model.ArhiRuins.PageIndex)
+                {
+                    <span class="btn btn-primary disabled">@i</span>
+                }
+                else
+                {
+                    <a asp-page="/ArhiRuins/Management" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
+                }
+            }
+
+            @if (Model.ArhiRuins.HasNextPage)
+            {
+                <a asp-page="/ArhiRuins/Management" asp-route-pageIndex="@(Model.ArhiRuins.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
+        </div>
+    </div>
+</div>
+<p><a asp-page="/Index">Назад</a></p>
+
+@section Scripts {
     <script type="text/javascript">
-                document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const rows = document.querySelectorAll('.table tbody tr');
             const dateMap = new Map();
             let colorIndex = 0;
@@ -22,90 +109,4 @@
             });
         });
     </script>
-</head>
-<body>
-    <h1>Статистика сноса архи-руин</h1>
-
-    <p>
-        @if (User.IsInRole("Admin"))
-        {
-            <a asp-page="/ArhiRuins/Create">Добавить данные о архи-руине</a>
-        }
-    </p>
-    
-    <div class="stats-container">
-        <div class="card">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Ник</th>
-                        <th>Координаты</th>
-                        <th>Количество ЧЖ</th>
-                        <th>Дата</th>
-                        <th>Дней с предыдущей</th>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <th>Действия</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var arhiRuin in Model.ArhiRuins.Items)
-                    {
-                        var daysFromPreviousArhiRuin = Model.DaysFromLastArhiRuin?.FirstOrDefault(x => x.ArhiRuinId == arhiRuin.Id)?.Days ?? 0;
-
-                        <tr data-date="@arhiRuin.DateOnly">
-                            <td> <a asp-page="/Players/Management" asp-route-pageIndex="@arhiRuin.PlayerEntity.Id">@arhiRuin.PlayerEntity.PName</a></td>
-                            <td>@(arhiRuin.HorizontalPosition)-@(arhiRuin.VerticalPosition)</td>
-                            <td>@(arhiRuin.BlackGemCount)</td>
-                            <td>@(arhiRuin.DateOnly)</td>
-                            <td>@(daysFromPreviousArhiRuin)</td>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <td>
-                                    <a asp-page="/ArhiRuins/Edit" asp-route-id="@arhiRuin.Id">Редактировать</a> |
-                                    <form method="post" asp-page-handler="Delete" style="display:inline;">
-                                        <input type="hidden" name="id" value="@arhiRuin.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
-                                    </form>
-                                </td>
-                           }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="pagination">
-                @if (Model.ArhiRuins.HasPreviousPage)
-                {
-                    <a asp-page="/ArhiRuins/Management" asp-route-pageIndex="@(Model.ArhiRuins.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">&laquo; Назад</span>
-                }
-
-                @for (int i = 1; i <= Model.ArhiRuins.TotalPages; i++)
-                {
-                    if (i == Model.ArhiRuins.PageIndex)
-                    {
-                        <span class="btn btn-primary disabled">@i</span>
-                    }
-                    else
-                    {
-                        <a asp-page="/ArhiRuins/Management" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
-                    }
-                }
-
-                @if (Model.ArhiRuins.HasNextPage)
-                {
-                    <a asp-page="/ArhiRuins/Management" asp-route-pageIndex="@(Model.ArhiRuins.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
-                }
-            </div>
-        </div>
-    </div>
-    <p><a asp-page="/Index">Назад</a></p>
-</body>
+}

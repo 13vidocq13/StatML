@@ -3,42 +3,46 @@
 @model StatML.Pages.Tournaments.CreateModel
 @attribute [Authorize(Policy = "TournamentsEditor")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
+<link rel="stylesheet" href="~/css/General.css" />
 
-<body>
-    <h1>Добавить данные о турнире</h1>
-    <form method="post">
-        <div class="form-group">
-            <label asp-for="Tournament.TournamentTypeId">Тип турнира</label>
-            <select asp-for="Tournament.TournamentTypeId" asp-items="Model.TypesOfTournaments" class="form-control">
-                <option value="">-- Выберите тип турнира --</option>
-            </select>
-            <span asp-validation-for="Tournament.TournamentTypeId" class="text-danger"></span>
+<h1>Добавить данные о турнире</h1>
 
-            <label asp-for="Tournament.PlayerId">Участник</label>
-            <select asp-for="Tournament.PlayerId" asp-items="Model.Players" class="form-control">
-                <option value="">-- Выберите игрока --</option>
-            </select>
-            <span asp-validation-for="Tournament.PlayerId" class="text-danger"></span>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Tournament.TournamentTypeId">Тип турнира</label>
+        <select asp-for="Tournament.TournamentTypeId" asp-items="Model.TypesOfTournaments" class="form-control">
+            <option value="">-- Выберите тип турнира --</option>
+        </select>
+        <span asp-validation-for="Tournament.TournamentTypeId" class="text-danger"></span>
 
-            <label asp-for="Tournament.ArtifactId">Артефакт</label>
-            <select asp-for="Tournament.ArtifactId" asp-items="Model.Artifacts" class="form-control">
-                <option value="">-- Выберите артефакт --</option>
-            </select>
-            @* <span asp-validation-for="Tournament.ArtifactId" class="text-danger"></span> *@
-            <label asp-for="Tournament.DateOnly">Дата турнира</label>
-            <input asp-for="Tournament.DateOnly" class="form-control" />
-            <span asp-validation-for="Tournament.DateOnly" class="text-danger"></span>
-            <label asp-for="Tournament.PositionInTournament">Позиция в турнире</label>
-            <input asp-for="Tournament.PositionInTournament" class="form-control" />
-            <span asp-validation-for="Tournament.PositionInTournament" class="text-danger"></span>
-            <label asp-for="Tournament.CountOfPoints">Количество очков</label>
-            <input asp-for="Tournament.CountOfPoints" class="form-control" />
-            <span asp-validation-for="Tournament.CountOfPoints" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a asp-page="/Index" class="btn btn-secondary">Отмена</a>
-    </form>
-</body>
+        <label asp-for="Tournament.PlayerId">Участник</label>
+        <select asp-for="Tournament.PlayerId" asp-items="Model.Players" class="form-control">
+            <option value="">-- Выберите игрока --</option>
+        </select>
+        <span asp-validation-for="Tournament.PlayerId" class="text-danger"></span>
+
+        <label asp-for="Tournament.ArtifactId">Артефакт</label>
+        <select asp-for="Tournament.ArtifactId" asp-items="Model.Artifacts" class="form-control">
+            <option value="">-- Выберите артефакт --</option>
+        </select>
+        <span asp-validation-for="Tournament.ArtifactId" class="text-danger"></span>
+
+        <label asp-for="Tournament.DateOnly">Дата турнира</label>
+        <input asp-for="Tournament.DateOnly" class="form-control" />
+        <span asp-validation-for="Tournament.DateOnly" class="text-danger"></span>
+
+        <label asp-for="Tournament.PositionInTournament">Позиция в турнире</label>
+        <input asp-for="Tournament.PositionInTournament" class="form-control" />
+        <span asp-validation-for="Tournament.PositionInTournament" class="text-danger"></span>
+
+        <label asp-for="Tournament.CountOfPoints">Количество очков</label>
+        <input asp-for="Tournament.CountOfPoints" class="form-control" />
+        <span asp-validation-for="Tournament.CountOfPoints" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-page="/Index" class="btn btn-secondary">Отмена</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -3,73 +3,67 @@
 @model StatML.Pages.Grails.GeneralModel
 @attribute [Authorize(Policy = "Observer")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
+<link rel="stylesheet" href="~/css/General.css" />
 
-<body>
-    <h1>Общая статистика по граалям</h1>
-    <p>
-        <a asp-page="/Grails/GeneralSaltsGrails">Сводная статистика</a> |
-        <a asp-page="/Grails/Management">Управление</a>
-    </p>
-    <div class="stats-container">
-        <div class="card">
-            <table class="table-zebra">
-                <thead>
+<h1>Общая статистика по граалям</h1>
+<p>
+    <a asp-page="/Grails/GeneralSaltsGrails">Сводная статистика</a> |
+    <a asp-page="/Grails/Management">Управление</a>
+</p>
+<div class="stats-container">
+    <div class="card">
+        <table class="table-zebra">
+            <thead>
+                <tr>
+                    <th>Ник</th>
+                    <th>Количество граалей</th>
+                    <th>Количество часов</th>
+                    <th>Количество ЧЖ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var player in Model.Players.Items)
+                {
                     <tr>
-                        <th>Ник</th>
-                        <th>Количество граалей</th>
-                        <th>Количество часов</th>
-                        <th>Количество ЧЖ</th>
+                        <td><a asp-page="/Players/Details" asp-route-id="@player.Id">@player.PName</a></td>
+                        <td>@player.GrailEntities.Count</td>
+                        <td>@player.GrailEntities.Sum(x => x.HoursForPlayer)</td>
+                        <td><b>@(player.GrailEntities.Sum(x => x.HoursForPlayer) / 200.0)</b></td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var player in Model.Players.Items)
-                    {
-                        <tr>
-                            <td><a asp-page="/Players/Details" asp-route-id="@player.Id">@player.PName</a></td>
-                            <td>@player.GrailEntities.Count</td>
-                            <td>@player.GrailEntities.Sum(x => x.HoursForPlayer)</td>
-                            <td><b>@(player.GrailEntities.Sum(x => x.HoursForPlayer) * 200)</b></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="pagination">
-                @if (Model.Players.HasPreviousPage)
+                }
+            </tbody>
+        </table>
+        <div class="pagination">
+            @if (Model.Players.HasPreviousPage)
+            {
+                <a asp-page="/Grails/General" asp-route-pageIndex="@(Model.Players.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.Players.TotalPages; i++)
+            {
+                if (i == Model.Players.PageIndex)
                 {
-                    <a asp-page="/Grails/General" asp-route-pageIndex="@(Model.Players.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    <span class="btn btn-primary disabled">@i</span>
                 }
                 else
                 {
-                    <span class="btn btn-primary disabled">&laquo; Назад</span>
+                    <a asp-page="/Grails/General" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
                 }
+            }
 
-                @for (int i = 1; i <= Model.Players.TotalPages; i++)
-                {
-                    if (i == Model.Players.PageIndex)
-                    {
-                        <span class="btn btn-primary disabled">@i</span>
-                    }
-                    else
-                    {
-                        <a asp-page="/Grails/General" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
-                    }
-                }
-
-                @if (Model.Players.HasNextPage)
-                {
-                    <a asp-page="/Grails/General" asp-route-pageIndex="@(Model.Players.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
-                }
-            </div>
+            @if (Model.Players.HasNextPage)
+            {
+                <a asp-page="/Grails/General" asp-route-pageIndex="@(Model.Players.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
         </div>
-   </div>
-    <p><a asp-page="/Index">Назад</a></p>
-</body>
-
-
+    </div>
+</div>
+<p><a asp-page="/Index">Назад</a></p>

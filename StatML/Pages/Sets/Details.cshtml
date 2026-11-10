@@ -3,66 +3,63 @@
 @model StatML.Pages.Sets.DetailsModel
 @attribute [Authorize(Policy = "AdminOnly")]
 
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
-<body>
-    <h1>Комплекты</h1>
+<link rel="stylesheet" href="~/css/General.css" />
 
-    <p>
-        <a asp-page="/Sets/Management">Управление</a>
-    </p>
+<h1>Комплекты</h1>
 
-    <div class="stats-container">
-        <div class="card">
-            <table class="table">
-                <thead>
+<p>
+    <a asp-page="/Sets/Management">Управление</a>
+</p>
+
+<div class="stats-container">
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Уровень</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sett in Model.Sets.Items)
+                {
                     <tr>
-                        <th>Название</th>
-                        <th>Уровень</th>
+                        <td>@sett.Name</td>
+                        <td>@sett.Level</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var sett in Model.Sets.Items)
-                    {
-                        <tr>
-                            <td>@sett.Name</td>
-                            <td>@sett.Level</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="pagination">
-                @if (Model.Sets.HasPreviousPage)
+                }
+            </tbody>
+        </table>
+        <div class="pagination">
+            @if (Model.Sets.HasPreviousPage)
+            {
+                <a asp-page="/Sets/Details" asp-route-pageIndex="@(Model.Sets.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.Sets.TotalPages; i++)
+            {
+                if (i == Model.Sets.PageIndex)
                 {
-                    <a asp-page="/Sets/Details" asp-route-pageIndex="@(Model.Sets.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    <span class="btn btn-primary disabled">@i</span>
                 }
                 else
                 {
-                    <span class="btn btn-primary disabled">&laquo; Назад</span>
+                    <a asp-page="/Sets/Details" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
                 }
+            }
 
-                @for (int i = 1; i <= Model.Sets.TotalPages; i++)
-                {
-                    if (i == Model.Sets.PageIndex)
-                    {
-                        <span class="btn btn-primary disabled">@i</span>
-                    }
-                    else
-                    {
-                        <a asp-page="/Sets/Details" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
-                    }
-                }
-
-                @if (Model.Sets.HasNextPage)
-                {
-                    <a asp-page="/Sets/Details" asp-route-pageIndex="@(Model.Sets.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
-                }
-            </div>
+            @if (Model.Sets.HasNextPage)
+            {
+                <a asp-page="/Sets/Details" asp-route-pageIndex="@(Model.Sets.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
         </div>
     </div>
-</body>
+</div>

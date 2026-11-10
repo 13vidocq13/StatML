@@ -2,88 +2,86 @@
 @using Microsoft.AspNetCore.Authorization
 @model StatML.Pages.Promotions.ManagementModel
 @attribute [Authorize(Policy = "Observer")]
-<head>
-    <link rel="stylesheet" href="~/css/General.css" />
-</head>
-<body>
-    <h1>Статистика акций</h1>
 
-    <p>
-        @if (User.IsInRole("Admin"))
-        {
-            <a asp-page="/Promotions/Create">Добавить данные о акции</a> <span>|</span> 
-        }
-    </p>
-    
-    <div class="stats-container">
-        <div class="card">
-            <table class="table-zebra">
-                <thead>
+<link rel="stylesheet" href="~/css/General.css" />
+
+<h1>Статистика акций</h1>
+
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="/Promotions/Create">Добавить данные об акции</a> <span>|</span>
+    }
+</p>
+
+<div class="stats-container">
+    <div class="card">
+        <table class="table-zebra">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Уровень</th>
+                    <th>С предыдущей акции прошло дней</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Действия</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var promotion in Model.Promotions.Items)
+                {
+                    var daysFromPreviousPromotion = Model.DaysFromLastPromotions?.FirstOrDefault(x => x.PromotionId == promotion.Id)?.Days ?? 0;
+
                     <tr>
-                        <th>Дата</th>
-                        <th>Уровень</th>
-                        <th>С предыдущей акции прошло дней</th>
+                        <td>@promotion.DateOnly</td>
+                        <td>@(promotion.Level != 0 ? promotion.Level : "Древняя")</td>
+                        <td>@daysFromPreviousPromotion</td>
                         @if (User.IsInRole("Admin"))
                         {
-                            <th>Действия</th>
+                            <td>
+                                <a asp-page="/Promotions/Edit" asp-route-id="@promotion.Id">Редактировать</a> |
+                                <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                    <input type="hidden" name="id" value="@promotion.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
+                                </form>
+                            </td>
                         }
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var promotion in Model.Promotions.Items)
-                    {
-                        var daysFromPreviousPromotion = Model.DaysFromLastPromotions?.FirstOrDefault(x => x.PromotionId == promotion.Id)?.Days ?? 0;
-                        
-                        <tr>
-                            <td>@promotion.DateOnly</td>
-                            <td>@(promotion.Level != 0 ? promotion.Level : "Древняя")</td>
-                            <td>@daysFromPreviousPromotion</td>
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <td>
-                                    <a asp-page="/Promotions/Edit" asp-route-id="@promotion.Id">Редактировать</a> |
-                                    <form method="post" asp-page-handler="Delete" style="display:inline;">
-                                        <input type="hidden" name="id" value="@promotion.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить запись?')">Удалить</button>
-                                    </form>
-                                </td>
-                           }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="pagination">
-                @if (Model.Promotions.HasPreviousPage)
+                }
+            </tbody>
+        </table>
+        <div class="pagination">
+            @if (Model.Promotions.HasPreviousPage)
+            {
+                <a asp-page="/Promotions/Management" asp-route-pageIndex="@(Model.Promotions.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">&laquo; Назад</span>
+            }
+
+            @for (int i = 1; i <= Model.Promotions.TotalPages; i++)
+            {
+                if (i == Model.Promotions.PageIndex)
                 {
-                    <a asp-page="/Promotions/Management" asp-route-pageIndex="@(Model.Promotions.PageIndex - 1)" class="btn btn-primary">&laquo; Назад</a>
+                    <span class="btn btn-primary disabled">@i</span>
                 }
                 else
                 {
-                    <span class="btn btn-primary disabled">&laquo; Назад</span>
+                    <a asp-page="/Promotions/Management" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
                 }
+            }
 
-                @for (int i = 1; i <= Model.Promotions.TotalPages; i++)
-                {
-                    if (i == Model.Promotions.PageIndex)
-                    {
-                        <span class="btn btn-primary disabled">@i</span>
-                    }
-                    else
-                    {
-                        <a asp-page="/Promotions/Management" asp-route-pageIndex="@i" class="btn btn-primary">@i</a>
-                    }
-                }
-
-                @if (Model.Promotions.HasNextPage)
-                {
-                    <a asp-page="/Promotions/Management" asp-route-pageIndex="@(Model.Promotions.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
-                }
-                else
-                {
-                    <span class="btn btn-primary disabled">Вперёд &raquo;</span>
-                }
-            </div>
+            @if (Model.Promotions.HasNextPage)
+            {
+                <a asp-page="/Promotions/Management" asp-route-pageIndex="@(Model.Promotions.PageIndex + 1)" class="btn btn-primary">Вперёд &raquo;</a>
+            }
+            else
+            {
+                <span class="btn btn-primary disabled">Вперёд &raquo;</span>
+            }
         </div>
     </div>
-    <p><a asp-page="/Index">Назад</a></p>
-</body>
+</div>
+<p><a asp-page="/Index">Назад</a></p>

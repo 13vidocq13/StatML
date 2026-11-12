@@ -23,6 +23,14 @@ namespace StatML.Pages
             Players = _context.Players.ToList();
         }
 
+        public IActionResult OnGetDownloadDb()
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "StatML.db");
+            if (!System.IO.File.Exists(path)) return NotFound();
+
+            // Отдает файл базы на скачивание в браузере
+            return PhysicalFile(path, "application/octet-stream", "StatML.db");
+        }
         public void OnPost()
         {
         }

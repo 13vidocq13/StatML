@@ -2,3 +2,7 @@
 publish/ 
 bin/ 
 obj/ 
+
+StatML/App_Data/StatML.db
+StatML/App_Data/StatML.db-wal
+StatML/App_Data/StatML.db-shm

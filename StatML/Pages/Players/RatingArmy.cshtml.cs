@@ -20,7 +20,6 @@ namespace StatML.Pages.Players
             _context = context;
         }
 
-        // Главное свойство для отображения данных во вьюхе
         public PaginatedList<PlayerRatingDiffViewModel> RatingEntries { get; set; } = default!;
 
         public async Task OnGetAsync(int? pageIndex)
@@ -41,13 +40,11 @@ namespace StatML.Pages.Players
             StartDate ??= dateFrom.ToString("yyyy-MM-dd");
             EndDate ??= dateTo.ToString("yyyy-MM-dd");
 
-            // 1. Достаем данные из базы за эти две даты
             var rawData = await _context.RatingArmies
                 .Include(r => r.PlayerEntity)
                 .Where(r => r.RateDate == dateFrom || r.RateDate == dateTo)
                 .ToListAsync();
 
-            // 2. Считаем разницу (если прошлой записи нет, прирост равен 0)
             var calculatedList = rawData
                 .GroupBy(r => r.PlayerId)
                 .Select(g => new
@@ -56,7 +53,6 @@ namespace StatML.Pages.Players
                     FromRecord = g.FirstOrDefault(x => x.RateDate == dateFrom),
                     ToRecord = g.FirstOrDefault(x => x.RateDate == dateTo)
                 })
-                // Оставляем тех, кто присутствует на конечную дату
                 .Where(x => x.ToRecord != null)
                 .Select(x => new PlayerRatingDiffViewModel
                 {
@@ -64,13 +60,11 @@ namespace StatML.Pages.Players
                     PlayerName = x.ToRecord?.PlayerEntity?.PName ?? x.FromRecord?.PlayerEntity?.PName ?? "Неизвестно",
                     RateFrom = x.FromRecord?.Rate ?? 0,
                     RateTo = x.ToRecord!.Rate,
-                    // Если у новичка нет прошлой записи, прирост считается как 0
                     Difference = x.FromRecord != null ? x.ToRecord!.Rate - x.FromRecord.Rate : 0
                 })
                 .OrderByDescending(x => x.Difference)
                 .ToList();
 
-            // 3. Пагинация
             int pageSize = 15;
             int pageNumber = pageIndex ?? 1;
 
@@ -79,7 +73,6 @@ namespace StatML.Pages.Players
                 .Take(pageSize)
                 .ToList();
 
-            // Присваиваем в RatingEntries для вывода во вьюхе
             RatingEntries = new PaginatedList<PlayerRatingDiffViewModel>(
                 pageItems,
                 calculatedList.Count,

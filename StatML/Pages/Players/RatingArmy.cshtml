@@ -34,7 +34,8 @@
                     <th style="width:100px">Номер</th>
                     <th style="width:200px">Игровой ник</th>
                     <th>Изменение рейтинга</th>
-                 </tr>
+                    <th style="width:200px">Текущий рейтинг</th>
+                </tr>
             </thead>
             <tbody>
                 @{
@@ -43,23 +44,20 @@
                 @foreach (var entry in Model.RatingEntries.Items)
                 {
                     <tr>
-                        <td><strong>#@(startIndex++)</strong></td> <!-- Заполняем номер здесь -->
+                        <td><strong>#@(startIndex++)</strong></td>
                         <td><a asp-page="/Players/Details" asp-route-id="@entry.PlayerId">@entry.PlayerName</a></td>
                         <td>@entry.Difference.ToString("N0")</td>
+                        <td><strong>@entry.RateTo.ToString("N0")</strong></td>
                     </tr>
                 }
             </tbody>
         </table>
 
-        <!-- Пагинация с сохранением параметров дат в GET-запросе -->
+        <!-- Пагинация с сохранением параметров дат из модели -->
         <div class="pagination">
-            @{
-                string GetRouteParams(int pIdx) => $"&pageIndex={pIdx}&startDate={Request.Query["startDate"]}&endDate={Request.Query["endDate"]}";
-            }
-
             @if (Model.RatingEntries.HasPreviousPage)
             {
-                <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@(Model.RatingEntries.PageIndex - 1)" asp-route-startDate="@Request.Query["startDate"]" asp-route-endDate="@Request.Query["endDate"]" class="btn btn-primary">&laquo; Назад</a>
+                <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@(Model.RatingEntries.PageIndex - 1)" asp-route-startDate="@Model.StartDate" asp-route-endDate="@Model.EndDate" class="btn btn-primary">&laquo; Назад</a>
             }
             else
             {
@@ -74,13 +72,13 @@
                 }
                 else
                 {
-                    <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@i" asp-route-startDate="@Request.Query["startDate"]" asp-route-endDate="@Request.Query["endDate"]" class="btn btn-primary">@i</a>
+                    <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@i" asp-route-startDate="@Model.StartDate" asp-route-endDate="@Model.EndDate" class="btn btn-primary">@i</a>
                 }
             }
 
             @if (Model.RatingEntries.HasNextPage)
             {
-                <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@(Model.RatingEntries.PageIndex + 1)" asp-route-startDate="@Request.Query["startDate"]" asp-route-endDate="@Request.Query["endDate"]" class="btn btn-primary">Вперёд &raquo;</a>
+                <a asp-page="/Players/RatingArmy" asp-route-pageIndex="@(Model.RatingEntries.PageIndex + 1)" asp-route-startDate="@Model.StartDate" asp-route-endDate="@Model.EndDate" class="btn btn-primary">Вперёд &raquo;</a>
             }
             else
             {
